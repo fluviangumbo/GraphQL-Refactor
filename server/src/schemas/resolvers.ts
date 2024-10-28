@@ -1,4 +1,4 @@
-import { User } from '../models/index.js'; // had to remove default from index
+import User from '../models/index.js'; // had to remove default from index
 import { signToken, AuthenticationError } from '../services/auth.js';
 
 interface LoginuserArgs {
