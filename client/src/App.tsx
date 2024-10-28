@@ -14,7 +14,7 @@ const httpLink = createHttpLink({
   uri: 'graphql',
 });
 
-const authLink = setContext(({ headers }) => { // Why error? removed _, as first argument
+const authLink = setContext((_, { headers }) => {
   const token = localStorage.getItem('id_token');
 
   return {

@@ -1,3 +1,3 @@
-import User from './User';
+import User from './User.js';
 
-export { User }; // had to remove default
+export default User; // had to remove default
