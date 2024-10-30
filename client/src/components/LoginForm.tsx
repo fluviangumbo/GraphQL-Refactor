@@ -8,9 +8,13 @@ import type { User } from '../models/User.js';
 import { useMutation } from '@apollo/client';
 import { LOGIN_USER } from '../utils/mutations.js';
 
+export interface FormProps {
+  handleModalClose: () => void;
+}
+
 // biome-ignore lint/correctness/noEmptyPattern: <explanation>
-const LoginForm = ({}: { handleModalClose: () => void }) => {
-  const [userFormData, setUserFormData] = useState<User>({ username: '', email: '', password: '', savedBooks: [] });
+const LoginForm: React.FC<FormProps> = ({ handleModalClose }) => {
+  const [userFormData, setUserFormData] = useState<User>({ email: '', password: '' });
   const [validated] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
 
@@ -18,30 +22,33 @@ const LoginForm = ({}: { handleModalClose: () => void }) => {
     const { name, value } = event.target;
     setUserFormData({ ...userFormData, [name]: value });
   };
+  
+  const [login, { error }] = useMutation(LOGIN_USER);
 
   const handleFormSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-
     // check if form has everything (as per react-bootstrap docs)
     const form = event.currentTarget;
     if (form.checkValidity() === false) {
       event.preventDefault();
       event.stopPropagation();
+      return;
     }
 
     try {
-      const [login, { error }] = useMutation(LOGIN_USER);
 
-      if (!error) {
-        const { token } = await login({
-          variables: { input: { ...userFormData } }
-        });
-      } else {
-        throw new Error('something went wrong!');
+      const { data } = await login({
+        variables: { input: { ...userFormData } }
+      });
+
+      if (error) {
+        throw new Error(error.message);
       }
 
-      // How do we handle tokens?
+      const { token } = data.login;
       Auth.login(token);
+
+      handleModalClose();
     } catch (err) {
       console.error(err);
       setShowAlert(true);

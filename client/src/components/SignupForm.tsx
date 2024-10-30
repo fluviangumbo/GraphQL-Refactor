@@ -6,11 +6,12 @@ import { useMutation } from '@apollo/client';
 import { ADD_USER } from '../utils/mutations.js';
 import Auth from '../utils/auth.js';
 import type { User } from '../models/User.js';
+import { FormProps } from './LoginForm.js';
 
 // biome-ignore lint/correctness/noEmptyPattern: <explanation>
-const SignupForm = ({}: { handleModalClose: () => void }) => {
+const SignupForm: React.FC<FormProps> = ({ handleModalClose }) => {
   // set initial form state
-  const [userFormData, setUserFormData] = useState<User>({ username: '', email: '', password: '', savedBooks: [] });
+  const [userFormData, setUserFormData] = useState<User>({ username: '', email: '', password: ''});
   // set state for form validation
   const [validated] = useState(false);
   // set state for alert
@@ -20,6 +21,8 @@ const SignupForm = ({}: { handleModalClose: () => void }) => {
     const { name, value } = event.target;
     setUserFormData({ ...userFormData, [name]: value });
   };
+  
+  const [addUser, { error }] = useMutation(ADD_USER);
 
   const handleFormSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -30,21 +33,22 @@ const SignupForm = ({}: { handleModalClose: () => void }) => {
       event.preventDefault();
       event.stopPropagation();
     }
+    
 
     try {
-      const [addUser, { error }] = useMutation(ADD_USER);
 
-      if (!error) {
-        const newUser = await addUser({
-          variables: { input: { ...userFormData } }
-        });
+      const { data } = await addUser({
+        variables: { input: { ...userFormData } }
+      });
 
-        const { token } = newUser.token; // unsure
-        Auth.login(token);
-      } else {
-        throw new Error('something went wrong!');
+      if (error) {
+        throw new Error(error.message);
       }
-      
+
+      const { token } = data.addUser;
+      Auth.login(token);
+
+      handleModalClose();
     } catch (err) {
       console.error(err);
       setShowAlert(true);

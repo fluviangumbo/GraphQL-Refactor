@@ -4,17 +4,17 @@ type User {
     username: String
     email: String
     password: String
-    savedBooks: Book[]
-    bookCount: Number
+    savedBooks: [Book]
+    bookCount: Int
 }
 
 type Book {
     bookId: String
     title: String
-    authors: String[]
+    authors: [String]
     description: String
-    image: string
-    link: string
+    image: String
+    link: String
 }
 
 input UserInput {
@@ -26,7 +26,7 @@ input UserInput {
 input BookInput {
     bookId: String
     title: String
-    authors: String[]
+    authors: [String]
     description: String
     image: String
     link: String
@@ -48,6 +48,5 @@ type Mutation {
     removeBook(bookId: String!): User
 }
 `;
-// need to include virtals/getters? we have bookCount
 
 export default typeDefs;
