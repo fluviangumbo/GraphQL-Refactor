@@ -66,13 +66,17 @@ const resolvers = {
         },
         saveBook: async (_parent: any, { input }: AddBookArgs, context: any) => {
             if (context.user) {
-                return await User.findOneAndUpdate(
-                    { _id: context.user._id },
+                console.log(context.user);
+                const updatedUser = await User.findOneAndUpdate(
+                    { _id: context.user.data._id },
                     {
                         $addToSet: { savedBooks: { ...input } }
                     },
                     { new: true },
                 );
+
+                console.log(updatedUser);
+                return updatedUser;
             }
 
             throw new AuthenticationError('Error adding book.');
@@ -80,7 +84,7 @@ const resolvers = {
         removeBook: async (_parent: any, { bookId }: RemoveBookArgs, context: any) => {
             if (context.user) {
                 return await User.findOneAndUpdate(
-                    { _id: context.user._id },
+                    { _id: context.user.data._id },
                     {
                         $pull: { savedBooks: { bookId } }
                     },
