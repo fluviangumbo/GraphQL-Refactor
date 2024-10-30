@@ -41,8 +41,8 @@ const SavedBooks = () => {
     <>
       <div className='text-light bg-dark p-5'>
         <Container>
-          {userData.username ? (
-            <h1>Viewing {userData.username}'s saved books!</h1>
+          {userData.me.username ? (
+            <h1>Viewing {userData.me.username}'s saved books!</h1>
           ) : (
             <h1>Viewing saved books!</h1>
           )}
@@ -50,13 +50,13 @@ const SavedBooks = () => {
       </div>
       <Container>
         <h2 className='pt-5'>
-          {userData.savedBooks.length
-            ? `Viewing ${userData.savedBooks.length} saved ${userData.savedBooks.length === 1 ? 'book' : 'books'
+          {userData.me.savedBooks.length
+            ? `Viewing ${userData.me.savedBooks.length} saved ${userData.me.savedBooks.length === 1 ? 'book' : 'books'
             }:`
             : 'You have no saved books!'}
         </h2>
         <Row>
-          {userData.savedBooks.map((book: any) => {
+          {userData.me.savedBooks.map((book: any) => {
             return (
               <Col md='4'>
                 <Card key={book.bookId} border='dark'>

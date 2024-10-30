@@ -33,7 +33,7 @@ const resolvers = {
     Query: {
         me: async (_parent: any, _args: any, context: any) => {
             if (context.user) {
-                return User.findOne({ _id: context.user._id });
+                return User.findOne({ _id: context.user.data._id });
             }
 
             throw new AuthenticationError('Could not validate user.');
@@ -66,7 +66,6 @@ const resolvers = {
         },
         saveBook: async (_parent: any, { input }: AddBookArgs, context: any) => {
             if (context.user) {
-                console.log(context.user);
                 const updatedUser = await User.findOneAndUpdate(
                     { _id: context.user.data._id },
                     {
@@ -75,7 +74,6 @@ const resolvers = {
                     { new: true },
                 );
 
-                console.log(updatedUser);
                 return updatedUser;
             }
 

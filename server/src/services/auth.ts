@@ -16,7 +16,7 @@ export const authenticateToken = ({ req }: any) => {
 
   try {
     const userData = jwt.verify(token, process.env.JWT_SECRET_KEY || '', { maxAge: '1hr' });
-    req.user = userData;
+    req.user = userData; // could do userData.data to destructure that object out from here
     
     return req;
   } catch (err) {
@@ -28,7 +28,7 @@ export const signToken = (username: string, email: string, _id: unknown) => {
   const payload = { username, email, _id };
   const secretKey: any = process.env.JWT_SECRET_KEY || '';
 
-  return jwt.sign({ data: payload }, secretKey, { expiresIn: '1h' });
+  return jwt.sign({ data: payload }, secretKey, { expiresIn: '1h' }); // data is an alias that we are saying is the object containing payload
 };
 
 export class AuthenticationError extends GraphQLError {
